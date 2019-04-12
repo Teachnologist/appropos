@@ -3,53 +3,48 @@
 <head th:replace="public/layout/meta :: heading"></head>
 <body>
 
+
 <!-- Start your page here-->
 <div style="height: 100vh">
     <nav th:replace="public/layout/navbar :: navbar"></nav>
 
     <!--secondary header-->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#USD" role="tab" aria-controls="home"
-               aria-selected="true">USD</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#EUR" role="tab" aria-controls="profile"
-               aria-selected="false">EUR</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#GBP" role="tab" aria-controls="contact"
-               aria-selected="false">GBP</a>
+        <li class="nav-item" th:each="list:${products}">
+            <a th:if="${list.index} == 0" class="nav-link active" th:id="|${list.key}-tab|" data-toggle="tab" th:href="|#${list.key}-panel|" role="tab" th:aria-controls="|${list.key}-panel|"
+               aria-selected="true" th:text="|${list.key}|"></a>
+            <a th:if="${list.index} > 0" class="nav-link" th:id="|${list.key}-tab|" data-toggle="tab" th:href="|#${list.key}-panel|" role="tab" th:aria-controls="|${list.key}-panel|"
+            aria-selected="false" th:text="${list.key}"></a>
         </li>
     </ul>
 
 <!-- /Start your data here-->
-
-
 <!-- Jumbotron -->
- <div id="USD">
-<div class="jumbotron">
+    <div class="tab-content">
+        <!-- Active Jumbotron -->
+      <div th:if="${currency.index} == 0" class="tab-pane fade show active" role="tabpanel" th:aria-labelledby="|${currency.key}-tab|" th:id="|${currency.key}-panel|" th:each="currency:${products}">
+         <div class="jumbotron" th:id="|jumbo-${currencies.pair}|" th:each="currencies:${currency.values}">
 
-    <!-- Title -->
-    <h2 class="card-title h2">USD-BTC</h2>
-    <!-- Subtitle -->
-    <p class="blue-text my-3 font-weight-bold">4444.40</p><p class="blue-text my-3 font-weight-bold">4444.38</p><p class="blue-text my-3 font-weight-bold">4444.50</p><p class="blue-text my-3 font-weight-bold">+0.12</p>
+             <div class="table-responsive-sm">
+                 <table class="table">
+                     <tr>
+                         <td class="vertical-table-header" th:id="|pair-${currencies.pair}|" th:text="${currencies.pair}"></td>
+                         <td ><span th:id="|numdiff-${currencies.pair}|">0.00</span><span th:id="|perdiff-${currencies.pair}|"> (0.0%)</span></td>
+                     </tr>
+
+                     <tr>
+                         <td class="vertical-table-header" data-toggle="tooltip" data-placement="right" title="Value of coins at purchase. In demo mode, this is the value on app load.">Purchase Price<span class="warning-text-color">*</span></td>
+                         <td th:text="${currencies.rate}"></td>
+                     </tr>
+                     <tr>
+                         <td class="vertical-table-header" >Current Rate</td>
+                         <td th:id="|currrate-${currencies.pair}|" th:text="${currencies.rate}"></td>
+                     </tr>
+                 </table>
+             </div>
 
     <!-- Grid row -->
-    <div class="row d-flex justify-content-center">
 
-        <!-- Grid column -->
-        <div class="col-xl-7 pb-2">
-
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga aliquid dolorem ea distinctio exercitationem delectus qui, quas eum architecto, amet quasi accusantium, fugit consequatur ducimus obcaecati numquam molestias hic itaque accusantium doloremque laudantium, totam rem aperiam.</p>
-
-        </div>
-        <!-- Grid column -->
-
-    </div>
-    <!-- Grid row -->
-
-    <hr class="my-4">
 
     <div class="pt-2">
         <button type="button" class="btn btn-blue waves-effect">Buy now <span class="far fa-gem ml-1"></span></button>
@@ -57,105 +52,43 @@
     </div>
 
 </div>
-<!-- Jumbotron -->
+      </div>
+<!-- Active Jumbotron -->
+          <!-- INactive Jumbotron -->
+          <div th:if="${currency.index} > 0" class="tab-pane fade" role="tabpanel" th:aria-labelledby="|${currency.key}-tab|" th:id="|${currency.key}-panel|" th:each="currency:${products}">
+              <div class="jumbotron" th:id="|jumbo-${currencies.pair}|" th:each="currencies:${currency.values}">
 
-<!-- Jumbotron -->
-<div class="jumbotron text-center">
+                  <div class="table-responsive-sm">
+                      <table class="table">
+                          <tr>
+                              <td class="vertical-table-header" th:id="|pair-${currencies.pair}|" th:text="${currencies.pair}"></td>
+                              <td ><span th:id="|numdiff-${currencies.pair}|">0.00</span><span th:id="|perdiff-${currencies.pair}|"> (0.0%)</span></td>
+                          </tr>
 
-    <!-- Title -->
-    <h2 class="card-title h2">Material Design for Bootstrap</h2>
-    <!-- Subtitle -->
-    <p class="blue-text my-4 font-weight-bold">Powerful and free Material Design UI KIT</p>
+                          <tr>
+                              <td class="vertical-table-header" data-toggle="tooltip" data-placement="right" title="Value of coins at purchase. In demo mode, this is the value on app load.">Purchase Price<span class="warning-text-color">*</span></td>
+                              <td th:text="${currencies.rate}"></td>
+                          </tr>
+                          <tr>
+                              <td class="vertical-table-header" >Current Rate</td>
+                              <td th:id="|currrate-${currencies.pair}|" th:text="${currencies.rate}"></td>
+                          </tr>
+                      </table>
+                  </div>
+                  <!-- Grid row -->
 
-    <!-- Grid row -->
-    <div class="row d-flex justify-content-center">
+                  <hr class="my-4">
 
-        <!-- Grid column -->
-        <div class="col-xl-7 pb-2">
+                  <div class="pt-2">
+                      <button type="button" class="btn btn-blue waves-effect">Buy now <span class="far fa-gem ml-1"></span></button>
+                      <button type="button" class="btn btn-outline-primary waves-effect">Download <i class="fas fa-download ml-1"></i></button>
+                  </div>
 
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga aliquid dolorem ea distinctio exercitationem delectus qui, quas eum architecto, amet quasi accusantium, fugit consequatur ducimus obcaecati numquam molestias hic itaque accusantium doloremque laudantium, totam rem aperiam.</p>
-
-        </div>
-        <!-- Grid column -->
-
-    </div>
-    <!-- Grid row -->
-
-    <hr class="my-4">
-
-    <div class="pt-2">
-        <button type="button" class="btn btn-blue waves-effect">Buy now <span class="far fa-gem ml-1"></span></button>
-        <button type="button" class="btn btn-outline-primary waves-effect">Download <i class="fas fa-download ml-1"></i></button>
-    </div>
-
-</div>
-<!-- Jumbotron -->
-
-<!-- Jumbotron -->
-<div class="jumbotron text-center">
-
-    <!-- Title -->
-    <h2 class="card-title h2">Material Design for Bootstrap</h2>
-    <!-- Subtitle -->
-    <p class="blue-text my-4 font-weight-bold">Powerful and free Material Design UI KIT</p>
-
-    <!-- Grid row -->
-    <div class="row d-flex justify-content-center">
-
-        <!-- Grid column -->
-        <div class="col-xl-7 pb-2">
-
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga aliquid dolorem ea distinctio exercitationem delectus qui, quas eum architecto, amet quasi accusantium, fugit consequatur ducimus obcaecati numquam molestias hic itaque accusantium doloremque laudantium, totam rem aperiam.</p>
-
-        </div>
-        <!-- Grid column -->
-
-    </div>
-    <!-- Grid row -->
-
-    <hr class="my-4">
-
-    <div class="pt-2">
-        <button type="button" class="btn btn-blue waves-effect">Buy now <span class="far fa-gem ml-1"></span></button>
-        <button type="button" class="btn btn-outline-primary waves-effect">Download <i class="fas fa-download ml-1"></i></button>
-    </div>
-
-</div>
-<!-- Jumbotron -->
-
-<!-- Jumbotron -->
-<div class="jumbotron text-center">
-
-    <!-- Title -->
-    <h2 class="card-title h2">Material Design for Bootstrap</h2>
-    <!-- Subtitle -->
-    <p class="blue-text my-4 font-weight-bold">Powerful and free Material Design UI KIT</p>
-
-    <!-- Grid row -->
-    <div class="row d-flex justify-content-center">
-
-        <!-- Grid column -->
-        <div class="col-xl-7 pb-2">
-
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga aliquid dolorem ea distinctio exercitationem delectus qui, quas eum architecto, amet quasi accusantium, fugit consequatur ducimus obcaecati numquam molestias hic itaque accusantium doloremque laudantium, totam rem aperiam.</p>
-
-        </div>
-        <!-- Grid column -->
-
-    </div>
-    <!-- Grid row -->
-
-    <hr class="my-4">
-
-    <div class="pt-2">
-        <button type="button" class="btn btn-blue waves-effect">Buy now <span class="far fa-gem ml-1"></span></button>
-        <button type="button" class="btn btn-outline-primary waves-effect">Download <i class="fas fa-download ml-1"></i></button>
-    </div>
-
-</div>
-<!-- Jumbotron -->
-</div>
-</div><!--end of usd section-->
+              </div>
+          </div>
+              <!-- INactive Jumbotron -->
+</div><!--end of tab section-->
+</div><!--end of page start-->
 
 <!-- SCRIPTS -->
 <div th:replace="public/layout/meta :: scripts"></div>
@@ -164,8 +97,91 @@
 
 </body>
 <script type="text/javascript">
-    $(document).ready(function(){
-       alert("jquery functions too");
-    });
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    })
 </script>
+<script type="text/javascript">
+    if (!!window.EventSource) {
+        console.log("Event source available");
+
+        var source = new EventSource('/sse/demo/currencies');
+
+        source.addEventListener('message', function(e) {
+            console.log("currency data");
+            console.dir(e.data);
+            var d = JSON.parse(e.data);
+            editTableData(d);
+
+        });
+
+        source.addEventListener('open', function(e) {
+            console.log("Connection was opened.");
+        }, false);
+
+        source.addEventListener('error', function(e) {
+            if (e.readyState == EventSource.CLOSED) {
+                console.dir(e);
+                console.log("Connection was closed.");
+            } else {
+                console.log(e.readyState);
+            }
+        }, false);
+    } else {
+        console.log("No SSE available");
+    }
+
+    function editTableData(data){
+        for(var i=0;i<data.length;i++){
+
+            var pair = data[i].pair;
+            console.dir(data[i]);
+
+            var current_span = "currrate-"+pair;
+            console.log(current_span);
+            var num_diff_span = "numdiff-"+pair;
+            var perc_diff_span = "perdiff-"+pair;
+
+            var curr_ele = document.getElementById(current_span);
+            var num_diff_ele = document.getElementById(num_diff_span);
+            var perc_diff_ele = document.getElementById(perc_diff_span);
+
+
+            curr_ele.innerHTML = data[i].rate;
+            num_diff_ele.innerHTML = data[i].demo_diff;
+            perc_diff_ele.innerHTML = data[i].demo_diff_percentage;
+
+            var color = "inherit";
+
+            switch(data[i].diff_interaction){
+                case "OVER":
+                    color = "green";
+                    break;
+                case "UNDER":
+                    color = "red";
+                    break;
+                default:
+                    color = "inherit";
+                    break;
+            }
+
+            num_diff_ele.style.color = color;
+            perc_diff_ele.style.color = color;
+
+
+
+
+
+
+
+
+        }
+
+
+    }
+</script>
+
+
+
+
 </html>
