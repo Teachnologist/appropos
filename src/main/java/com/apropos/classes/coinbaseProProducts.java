@@ -17,57 +17,57 @@ public class coinbaseProProducts {
     private static List BASE_CURRENCIES;
     private static List QUOTE_CURRENCIES;
 
-    public static void setDefaults(String uri, String currency){
+    public synchronized static void setDefaults(String uri, String currency){
         coinbaseProProducts.URI = uri;
         coinbaseProProducts.CURRENCY = currency;
     }
 
-    public static void setCURRENCY(String CURRENCY) {
+    public synchronized static void setCURRENCY(String CURRENCY) {
         coinbaseProProducts.CURRENCY = CURRENCY;
     }
 
-    public static void setURI(String URI) {
+    public synchronized static void setURI(String URI) {
         coinbaseProProducts.URI = URI;
     }
 
-    public static void setProduct_pairs(List<String> currency_pairs) {
+    public synchronized static void setProduct_pairs(List<String> currency_pairs) {
         coinbaseProProducts.product_pairs = currency_pairs;
     }
 
-    public static void setCurrency_products(List<Map<String, String>> currency_products) {
+    public synchronized static void setCurrency_products(List<Map<String, String>> currency_products) {
         coinbaseProProducts.currency_products = currency_products;
     }
 
-    public static void setBaseCurrencies(List baseCurrencies) {
+    public synchronized static void setBaseCurrencies(List baseCurrencies) {
         coinbaseProProducts.BASE_CURRENCIES = baseCurrencies;
     }
 
-    public static void setQuoteCurrencies(List quoteCurrencies) {
+    public synchronized static void setQuoteCurrencies(List quoteCurrencies) {
         coinbaseProProducts.QUOTE_CURRENCIES = quoteCurrencies;
     }
 
-    public static List getQuoteCurrencies() {
+    public synchronized static List getQuoteCurrencies() {
         return coinbaseProProducts.QUOTE_CURRENCIES;
     }
 
-    public static List getBaseCurrencies() {
+    public synchronized static List getBaseCurrencies() {
         return coinbaseProProducts.BASE_CURRENCIES;
     }
 
-    public static String getCURRENCY() {
+    public synchronized static String getCURRENCY() {
         return coinbaseProProducts.CURRENCY;
     }
 
 
-    public static String getURI() {
+    public synchronized static String getURI() {
         return coinbaseProProducts.URI;
     }
 
-    public static List<String> getProduct_pairs() {
+    public synchronized static List<String> getProduct_pairs() {
         return coinbaseProProducts.product_pairs;
     }
 
-    public static List<Map<String, String>> getCurrency_products() {
+    public synchronized static List<Map<String, String>> getCurrency_products() {
         return coinbaseProProducts.currency_products;
     }
 

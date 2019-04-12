@@ -1,19 +1,28 @@
 package com.apropos.crypto.app;
 
+import com.apropos.classes.coinbasePairRelatedData;
 import com.apropos.classes.coinbaseProProducts;
 import com.apropos.classes.coinbaseProducts;
 import com.apropos.demoData.coinbaseProductsCache;
+import com.apropos.demoData.coinbasegraphPoints;
+import com.apropos.demoThreads.coinbasePricingThread;
 import com.apropos.demoThreads.coinbaseProductThread;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.apropos.demoData.coinbasegraphPoints.clearPriceGrowthLineGraphData;
 
 @Controller
 public class webRouter {
     private String access_code = null;
     private static Integer init_site_counter = 0;
+    private static List<Thread> THREADS = new ArrayList<Thread>();
+    private static Thread active;
 
     @RequestMapping(value = "/")
     public String index(Model model){
@@ -32,11 +41,58 @@ public class webRouter {
 
         model.addAttribute("products", products);
 
-        coinbaseProductThread rc = new coinbaseProductThread();
-        Thread t = new Thread(rc);
-        t.start();
+
+      for(int i=0;i<THREADS.size();i++){
+          System.out.println("interrupting threads 1");
+          THREADS.get(i).interrupt();
+          System.out.println("interrupting threads 2");
+      }
+        coinbaseProductThread cpdt = new coinbaseProductThread();
+        Thread product_thread = new Thread(cpdt);
+        product_thread.start();
+        THREADS.add(product_thread);
+        System.out.println("THREAD 1: "+THREADS.toString());
 
         init_site_counter++;
         return "public/index";
+    }
+
+    @RequestMapping(value = "/metrics/{pair}")
+    public String metrics(Model model,@PathVariable(value = "pair", required=true) String pair){
+        System.out.print("\nACTIVE THREADS: "+THREADS.toString());
+
+        for(int i=0;i<THREADS.size();i++){
+            System.out.println("interrupting threads 3");
+            THREADS.get(i).interrupt();
+            System.out.println("interrupting threads 4");
+        }
+
+        coinbasegraphPoints.clearPriceGrowthLineGraphData();
+        coinbasePairRelatedData.setPAIR(pair);
+        coinbasePairRelatedData.callSellPrice();
+
+        coinbasePricingThread cpgt = new coinbasePricingThread();
+        Thread pricing_thread = new Thread(cpgt);
+        pricing_thread.start();
+        THREADS.add(pricing_thread);
+        System.out.println("THREAD 2: "+THREADS.toString());
+
+        model.addAttribute("pair", pair);
+
+        return "public/metrics";
+    }
+
+    @RequestMapping(value = "/trades/{pair}")
+    public String trades(Model model,@PathVariable(value = "pair", required=true) String pair){
+        model.addAttribute("pair", pair);
+
+        return "public/trades";
+    }
+
+    @RequestMapping(value = "/orders/{pair}")
+    public String orders(Model model,@PathVariable(value = "pair", required=true) String pair){
+        model.addAttribute("pair", pair);
+
+        return "public/orders";
     }
 }

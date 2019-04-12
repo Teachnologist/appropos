@@ -2,6 +2,7 @@ package com.apropos.classes;
 
 import com.apropos.curl.publicAPI;
 import com.apropos.demoData.coinbaseProductsCache;
+import com.apropos.demoData.coinbasegraphPoints;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -15,23 +16,23 @@ public class coinbaseProducts {
 
     private static JSONArray PRODUCT_CURRENCY_JSON;
 
-    public static void setDefault(String URL) {
+    public synchronized static void setDefault(String URL) {
         coinbaseProducts.URL = URL;
     }
 
-    public static void setURL(String URL) {
+    public synchronized static void setURL(String URL) {
         coinbaseProducts.URL = URL;
     }
 
-    public static String getURL() {
+    public synchronized static String getURL() {
         return URL;
     }
 
-    public static JSONArray getProductCurrencyJson() {
+    public synchronized static JSONArray getProductCurrencyJson() {
         return PRODUCT_CURRENCY_JSON;
     }
 
-    public static Boolean isStreamReady(){
+    public synchronized static Boolean isStreamReady(){
         if(PRODUCT_CURRENCY_JSON != null){
             return true;
         }
@@ -39,7 +40,14 @@ public class coinbaseProducts {
         return false;
     }
 
-    public static List<Map<String,Object>> getProductCurrenciesData(){
+    public synchronized static void clearData(){
+        PRODUCT_CURRENCY_DATA = null;
+        PRODUCT_CURRENCY_JSON = null;
+    }
+
+
+
+    public synchronized static List<Map<String,Object>> getProductCurrenciesData(){
         return PRODUCT_CURRENCY_DATA;
     }
 
@@ -58,31 +66,30 @@ public class coinbaseProducts {
         Integer ordinal_index_key = 0;
 
         for(int i = 0;i<quote_currencies.size();i++) {
-            String b_currency = quote_currencies.get(i).toString().toUpperCase();
-            if (!base_currencies.contains(b_currency)) {
-                String endpoint = "/exchange-rates?currency=" + b_currency;
-                publicAPI publicread = new publicAPI(URL, endpoint);
-                JSONObject obj = publicread.getcallAPIObject();
+            String q_currency = quote_currencies.get(i).toString().toUpperCase();
+            if (!base_currencies.contains(q_currency)) {
 
-                JSONObject data = obj.getJSONObject("data");
-                JSONObject rates = data.getJSONObject("rates");
-
-                List<Map<String, String>> listofobject = new ArrayList<Map<String, String>>();
+                 List<Map<String, String>> listofobject = new ArrayList<Map<String, String>>();
                 Map<String, Object> bigobject = new HashMap<String, Object>();
                 for (int q = 0; q < base_currencies.size(); q++) {
-                    Map<String, String> quoteobject = new HashMap<String, String>();
 
-                    String uppercase_quote = base_currencies.get(q).toString().toUpperCase();
+                    Boolean found = false;
 
-                    if (rates.has(uppercase_quote)) {
-                        String rate = rates.get(uppercase_quote).toString();
+                    String uppercase_base = base_currencies.get(q).toString().toUpperCase();
+
+                    JSONObject rates = coinbaseProducts.getCurrencyRateData(uppercase_base);
+
+                      Map<String, String> quoteobject = new HashMap<String, String>();
+
+                    if (rates.has(q_currency)) {
+                        String rate = rates.get(q_currency).toString();
                         if (rate != null) {
-                            quoteobject.put("quote", uppercase_quote);
+                            quoteobject.put("quote", uppercase_base);
                             quoteobject.put("rate", rate);
-                            String pair = b_currency + "-" + uppercase_quote;
+                            String pair = q_currency + "-" + uppercase_base;
                             quoteobject.put("pair", pair);
 
-                            String invpair = uppercase_quote + "-" + b_currency;
+                            String invpair = uppercase_base + "-" + q_currency;
                             quoteobject.put("invpair", invpair);
 
                             String valid_pair = null;
@@ -96,13 +103,13 @@ public class coinbaseProducts {
 
                             quoteobject.put("validpair", valid_pair);
 
-                            quoteobject.put(uppercase_quote, rate);
+                            quoteobject.put(uppercase_base, rate);
                             listofobject.add(quoteobject);
                         }
                     }
                     //[{BTC:{USD:100,EUR:200,...    }]
                 }
-                bigobject.put("key", b_currency);
+                bigobject.put("key", q_currency);
                 String date = new Date().toString();
                 bigobject.put("date", date);
                 bigobject.put("values", listofobject);
@@ -117,6 +124,21 @@ public class coinbaseProducts {
         System.out.print("\n"+arr.toString()+"\n");
         System.out.println("\n"+"....Complete"+"\n");
         PRODUCT_CURRENCY_DATA = arr;
+    }
+
+    private static JSONObject getCurrencyRateData(String quote){
+        JSONObject rates = new JSONObject();
+        try {
+            String endpoint = "/exchange-rates?currency=" + quote;
+            publicAPI publicread = new publicAPI(URL, endpoint);
+            JSONObject obj = publicread.getcallAPIObject();
+            JSONObject data = obj.getJSONObject("data");
+            rates = data.getJSONObject("rates");
+
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        return rates;
     }
 
     public static void converttoJSON() {
@@ -143,9 +165,10 @@ public class coinbaseProducts {
 
                 Float demo_original_rate = coinbaseProductsCache.getRateByPair(pair);
 
-                Float demo_diff = demo_original_rate - rate;
+                Float demo_diff = coinbaseProductsCache.getDifferenceOfRate(pair, rate);
 
-                Float demo_diff_percentage = demo_diff/demo_original_rate;
+                Float demo_diff_percentage = (demo_diff/demo_original_rate)*100;
+
 
                 String diff_interaction = "EVEN";
 
@@ -161,7 +184,7 @@ public class coinbaseProducts {
                 obj.put("rate", rate.toString());
 
                 obj.put("demo_diff", demo_diff.toString());
-                obj.put("demo_diff_percentage", demo_diff_percentage.toString());
+                obj.put("demo_diff_percentage", String.format("%.2f", demo_diff_percentage));
                 obj.put("diff_interaction", diff_interaction);
                 json_currencies.put(obj);
             }

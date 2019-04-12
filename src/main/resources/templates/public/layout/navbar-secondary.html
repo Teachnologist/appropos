@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<!--move to stylesheet-->
+
+<body>
+<!--Navbar-->
+<nav th:fragment="navbar (title)" class="sticky-top navbar navbar-expand-lg justify-content-between header-color">
+
+    <!-- Navbar brand -->
+    <a class="navbar-brand header-text-color header-text-font" href="/"><i class="fas fa-chevron-left"></i></a>
+
+
+    <p class="navbar-brand header-text-color header-text-font" th:text="${title}"></p>
+
+    <button class="btn btn-outline-white btn-sm my-0 header-text-font" type="submit">Login</button>
+
+
+
+</nav>
+<!--/.Navbar-->
+
+</body>
+</html>

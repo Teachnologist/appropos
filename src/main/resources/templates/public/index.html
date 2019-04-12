@@ -29,7 +29,7 @@
                  <table class="table">
                      <tr>
                          <td class="vertical-table-header" th:id="|pair-${currencies.pair}|" th:text="${currencies.pair}"></td>
-                         <td ><span th:id="|numdiff-${currencies.pair}|">0.00</span><span th:id="|perdiff-${currencies.pair}|"> (0.0%)</span></td>
+                         <td ><span th:id="|numdiff-${currencies.pair}|">0.00</span> (<span th:id="|perdiff-${currencies.pair}|">0.0</span>%)</td>
                      </tr>
 
                      <tr>
@@ -47,8 +47,9 @@
 
 
     <div class="pt-2">
-        <button type="button" class="btn btn-blue waves-effect">Buy now <span class="far fa-gem ml-1"></span></button>
-        <button type="button" class="btn btn-outline-primary waves-effect">Download <i class="fas fa-download ml-1"></i></button>
+        <a th:href="|/metrics/${currencies.invpair}|"><button type="button" class="btn btn-blue waves-effect"><i class="fas fa-tachometer-alt"></i>Metrics</button></a>
+        <a th:href="|/trades/${currencies.invpair}|"><button type="button" class="btn btn-outline-primary waves-effect"><i class="fas fa-book"></i>Trades</button></a>
+        <a th:href="|/orders/${currencies.invpair}|"><button type="button" class="btn btn-outline-primary waves-effect"><i class="fas fa-book"></i>Orders</button></a>
     </div>
 
 </div>
@@ -62,7 +63,7 @@
                       <table class="table">
                           <tr>
                               <td class="vertical-table-header" th:id="|pair-${currencies.pair}|" th:text="${currencies.pair}"></td>
-                              <td ><span th:id="|numdiff-${currencies.pair}|">0.00</span><span th:id="|perdiff-${currencies.pair}|"> (0.0%)</span></td>
+                              <td ><span th:id="|numdiff-${currencies.pair}|">0.00</span> (<span th:id="|perdiff-${currencies.pair}|"> 0.0</span>%)</td>
                           </tr>
 
                           <tr>
@@ -80,8 +81,9 @@
                   <hr class="my-4">
 
                   <div class="pt-2">
-                      <button type="button" class="btn btn-blue waves-effect">Buy now <span class="far fa-gem ml-1"></span></button>
-                      <button type="button" class="btn btn-outline-primary waves-effect">Download <i class="fas fa-download ml-1"></i></button>
+                      <a th:href="|/metrics/${currencies.invpair}|"><button type="button" class="btn btn-blue waves-effect"><i class="fas fa-tachometer-alt"></i>Metrics</button></a>
+                      <a th:href="|/trades/${currencies.invpair}|"><button type="button" class="btn btn-outline-primary waves-effect"><i class="fas fa-book"></i>Trades</button></a>
+                      <a th:href="|/orders/${currencies.invpair}|"><button type="button" class="btn btn-outline-primary waves-effect"><i class="fas fa-book"></i>Orders</button></a>
                   </div>
 
               </div>

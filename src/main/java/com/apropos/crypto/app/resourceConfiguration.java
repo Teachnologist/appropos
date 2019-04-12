@@ -10,7 +10,7 @@ public class resourceConfiguration implements WebMvcConfigurer {
       /*  registry.addResourceHandler("/style/**")
                 .addResourceLocations("/webjars/material-design-lite/1.1.0/");*/
 
-        registry.addResourceHandler("/static/**")
+        registry.addResourceHandler("/stat/**")
                 .addResourceLocations("classpath:/static/");
     }
 

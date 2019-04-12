@@ -1,10 +1,8 @@
 package com.apropos.demoThreads;
 
-import com.apropos.classes.coinbaseProducts;
+import com.apropos.classes.coinbasePairRelatedData;
 
-import java.util.Map;
-
-public class coinbaseProductThread implements Runnable {
+public class coinbasePricingThread implements Runnable {
 
 
     private static Boolean running = false;
@@ -13,21 +11,19 @@ public class coinbaseProductThread implements Runnable {
 
             try {
                 while(true) {
-                    System.out.println("currencies thread: " + Thread.currentThread().getName());
-                    coinbaseProducts.setProductCurrencyData();
-                    coinbaseProducts.converttoJSON();
+                    System.out.println("pricing thread: " + Thread.currentThread().getName());
+                    coinbasePairRelatedData.callSellPrice();
                     Thread.sleep(5000);
                 }
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                System.out.println("PRODUCTS INTERRUPTED!");
-                    Thread.currentThread().interrupt(); // propagate interrupt
-                System.out.println("PRODUCTS PROPOGATED!");
+                System.out.println("PRICING INTERRUPTED!");
+                Thread.currentThread().interrupt(); // propagate interrupt
                 return;
-
             }
         }
+
 
     public void startRunning(){
         setRunning(true);

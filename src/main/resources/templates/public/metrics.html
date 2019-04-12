@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="public/layout/meta :: heading"></head>
+<body>
+
+
+<!-- Start your page here-->
+<div style="height: 100vh">
+    <nav th:replace="public/layout/navbar-secondary :: navbar(title=${pair})"></nav>
+    <h4 th:text="${pair}"></h4>
+    <canvas id="lineChart"></canvas>
+
+  <!--end of tab section-->
+</div><!--end of page start-->
+
+<!-- SCRIPTS -->
+<div th:replace="public/layout/meta :: scripts"></div>
+<!-- JQuery -->
+
+
+</body>
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+</script>
+<script>
+    if (!!window.EventSource) {
+        console.log("Event source available");
+
+        var source = new EventSource('/sse/demo/charts');
+
+        source.addEventListener('message', function(e) {
+            console.log("chart data");
+            console.dir(e.data);
+            var d = JSON.parse(e.data);
+            writeToLineChart1(d);
+
+        });
+
+        source.addEventListener('open', function(e) {
+            console.log("Connection was opened.");
+        }, false);
+
+        source.addEventListener('error', function(e) {
+            if (e.readyState == EventSource.CLOSED) {
+                console.dir(e);
+                console.log("Connection was closed.");
+            } else {
+                console.log(e.readyState);
+            }
+        }, false);
+    } else {
+        console.log("No SSE available");
+    }
+
+
+
+
+
+
+    function writeToLineChart1(data) {
+        var ctxL = document.getElementById("lineChart").getContext('2d');
+        var myLineChart = new Chart(ctxL, {
+            type: 'line',
+            data: {
+                labels: data.formatted_date,
+                datasets: [{
+                    label: "My Investment",
+                    data: data.user_price,
+                    backgroundColor: [
+                        'rgba(105, 0, 132, .2)',
+                    ],
+                    borderColor: [
+                        'rgba(150, 99, 132, .7)',
+                    ],
+                    borderWidth: 2
+                },
+                    {
+                        label: "Current Value",
+                        data: data.current_price,
+                        backgroundColor: [
+                            'rgba(0, 137, 132, .2)',
+                        ],
+                        borderColor: [
+                            'rgba(0, 10, 130, .7)',
+                        ],
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    }
+
+</script>
+</html>

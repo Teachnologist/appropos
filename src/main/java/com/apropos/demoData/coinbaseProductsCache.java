@@ -9,20 +9,25 @@ public class coinbaseProductsCache {
     private static List<Map<String,Object>> currency_product_data;
     private static Map<String,Float> currency_data_mapped;
 
-    public static void setCurrency_product_data(List<Map<String,Object>> currency_product_data) {
+    public synchronized static void setCurrency_product_data(List<Map<String,Object>> currency_product_data) {
         coinbaseProductsCache.currency_product_data = currency_product_data;
         mapCurrencyValuesByProperty();
     }
 
-    public static List<Map<String,Object>> getCurrency_product_data() {
+    public synchronized static List<Map<String,Object>> getCurrency_product_data() {
         return currency_product_data;
     }
 
-    public static Float getRateByPair(String pair){
+    public synchronized static Float getRateByPair(String pair){
         return currency_data_mapped.get(pair);
     }
 
-    private static void mapCurrencyValuesByProperty(){
+    public synchronized static Float getDifferenceOfRate(String pair,Float current_rate){
+        return current_rate - getRateByPair(pair);
+
+    }
+
+    private synchronized static void mapCurrencyValuesByProperty(){
         if(currency_product_data != null) {
             currency_data_mapped = new HashMap<String,Float>();
 

@@ -1,7 +1,7 @@
 package com.apropos.crypto.app;
 
 
-import com.apropos.classes.coinbaseProducts;
+import com.apropos.demoData.coinbasegraphPoints;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(value="/sse/demo",produces = "text/event-stream;charset=UTF-8")
-public class sseCurrencyProductsDemo {
+public class sseChartsDemo {
 
-    @RequestMapping(value="/currencies",
+    @RequestMapping(value="/charts",
             method= RequestMethod.GET,
             produces="text/event-stream;charset=UTF-8")
     public @ResponseBody
@@ -26,12 +26,8 @@ public class sseCurrencyProductsDemo {
         try {
             Thread.sleep(5000);
 
-            System.out.println("sse in");
-            if(coinbaseProducts.isStreamReady()) {
-                return "data: " + coinbaseProducts.getProductCurrencyJson() + "\n\n";
-            }else{
-                return "data: null \n\n";
-            }
+            System.out.println("sse in 2");
+            return "data: " + coinbasegraphPoints.getPriceGrowthLineGraphJSON() + "\n\n";
         }catch(Exception e){
             return "data: " +e.toString();
         }
