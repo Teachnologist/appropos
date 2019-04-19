@@ -13,6 +13,8 @@
   <!--end of tab section-->
 </div><!--end of page start-->
 
+<a href="/email/thread">RUN BACKGROUND THREAD</a>
+
 <!-- SCRIPTS -->
 <div th:replace="public/layout/meta :: scripts"></div>
 <!-- JQuery -->
@@ -34,6 +36,7 @@
             console.log("chart data");
             console.dir(e.data);
             var d = JSON.parse(e.data);
+            console.dir(d);
             writeToLineChart1(d);
 
         });
@@ -68,24 +71,26 @@
                 datasets: [{
                     label: "My Investment",
                     data: data.user_price,
-                    backgroundColor: [
-                        'rgba(105, 0, 132, .2)',
-                    ],
                     borderColor: [
-                        'rgba(150, 99, 132, .7)',
+                        'black'
                     ],
-                    borderWidth: 2
+                    borderWidth: 1
                 },
+                    {
+                        label: "Average Price",
+                        data: data.price_moving_average,
+                        borderColor: [
+                            'orange'
+                        ],
+                        borderWidth: 3
+                    },
                     {
                         label: "Current Value",
                         data: data.current_price,
-                        backgroundColor: [
-                            'rgba(0, 137, 132, .2)',
-                        ],
                         borderColor: [
-                            'rgba(0, 10, 130, .7)',
+                            'blue'
                         ],
-                        borderWidth: 2
+                        borderWidth: 1
                     }
                 ]
             },

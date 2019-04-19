@@ -19,7 +19,10 @@ public class coinbaseProductsCache {
     }
 
     public synchronized static Float getRateByPair(String pair){
-        return currency_data_mapped.get(pair);
+        Float mapped = currency_data_mapped.get(pair);
+        Float cost_value = mapped + (mapped*(0.0149f*3));
+
+        return cost_value;
     }
 
     public synchronized static Float getDifferenceOfRate(String pair,Float current_rate){

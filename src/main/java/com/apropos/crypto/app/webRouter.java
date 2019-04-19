@@ -5,6 +5,7 @@ import com.apropos.classes.coinbaseProProducts;
 import com.apropos.classes.coinbaseProducts;
 import com.apropos.demoData.coinbaseProductsCache;
 import com.apropos.demoData.coinbasegraphPoints;
+import com.apropos.demoThreads.coinbaseEmailThread;
 import com.apropos.demoThreads.coinbasePricingThread;
 import com.apropos.demoThreads.coinbaseProductThread;
 import org.springframework.stereotype.Controller;
@@ -61,6 +62,8 @@ public class webRouter {
     public String metrics(Model model,@PathVariable(value = "pair", required=true) String pair){
         System.out.print("\nACTIVE THREADS: "+THREADS.toString());
 
+
+
         for(int i=0;i<THREADS.size();i++){
             System.out.println("interrupting threads 3");
             THREADS.get(i).interrupt();
@@ -95,4 +98,20 @@ public class webRouter {
 
         return "public/orders";
     }
+
+    @RequestMapping(value = "/email/thread")
+    public String backgroundemails(Model model){
+
+        coinbasePairRelatedData.callSellPrice();
+
+        coinbaseEmailThread cpgt = new coinbaseEmailThread();
+        Thread pricing_thread = new Thread(cpgt);
+        pricing_thread.start();
+        THREADS.add(pricing_thread);
+        System.out.println("THREAD 2: "+THREADS.toString());
+        return "public/etest";
+
+
+    }
+
 }
