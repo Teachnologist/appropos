@@ -11,6 +11,7 @@ public class coinbaseProductsCache {
 
     public synchronized static void setCurrency_product_data(List<Map<String,Object>> currency_product_data) {
         coinbaseProductsCache.currency_product_data = currency_product_data;
+        System.out.println("PRODUCTS SET: "+currency_product_data.toString());
         mapCurrencyValuesByProperty();
     }
 
@@ -19,15 +20,27 @@ public class coinbaseProductsCache {
     }
 
     public synchronized static Float getRateByPair(String pair){
-        Float mapped = currency_data_mapped.get(pair);
-        Float cost_value = mapped + (mapped*(0.0149f*3));
+        Float mapped = 0f;
+        Float cost_value = 0f;
+
+        if(currency_data_mapped != null){
+            mapped = currency_data_mapped.get(pair);
+            cost_value = mapped + (mapped*(0.0149f*3));
+        }
 
         return cost_value;
     }
 
     public synchronized static Float getDifferenceOfRate(String pair,Float current_rate){
         return current_rate - getRateByPair(pair);
+    }
 
+    public synchronized static Float getPurchasePriceAtRuntime(Float current_rate){
+        return current_rate + (current_rate*(0.0149f*3));
+    }
+
+    public synchronized static Float getDifferenceOfRateRUNTIME(Float current_rate){
+        return current_rate - getPurchasePriceAtRuntime(current_rate);
     }
 
     private synchronized static void mapCurrencyValuesByProperty(){
@@ -55,7 +68,7 @@ public class coinbaseProductsCache {
         }
 
 
-
+        System.out.println("CURRENCT MAPPED: "+currency_data_mapped.toString());
 
     }
 

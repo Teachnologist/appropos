@@ -1,11 +1,13 @@
 package com.apropos.crypto.app;
 
 import com.apropos.classes.coinbasePairRelatedData;
+import com.apropos.classes.coinbaseProOrderBook;
 import com.apropos.classes.coinbaseProProducts;
 import com.apropos.classes.coinbaseProducts;
 import com.apropos.demoData.coinbaseProductsCache;
 import com.apropos.demoData.coinbasegraphPoints;
 import com.apropos.demoThreads.coinbaseEmailThread;
+import com.apropos.demoThreads.coinbaseOrderBookThread;
 import com.apropos.demoThreads.coinbasePricingThread;
 import com.apropos.demoThreads.coinbaseProductThread;
 import org.springframework.stereotype.Controller;
@@ -33,21 +35,17 @@ public class webRouter {
             return "authenticated/index";
         }
 
-        coinbaseProducts.setProductCurrencyData();
+        coinbaseProducts.setProductCurrencyData(true);
         List products = coinbaseProducts.getProductCurrenciesData();
 
         if(init_site_counter < 1) {
             coinbaseProductsCache.setCurrency_product_data(products);
+
         }
 
         model.addAttribute("products", products);
 
-
-      for(int i=0;i<THREADS.size();i++){
-          System.out.println("interrupting threads 1");
-          THREADS.get(i).interrupt();
-          System.out.println("interrupting threads 2");
-      }
+        killAllThreads();
         coinbaseProductThread cpdt = new coinbaseProductThread();
         Thread product_thread = new Thread(cpdt);
         product_thread.start();
@@ -62,14 +60,7 @@ public class webRouter {
     public String metrics(Model model,@PathVariable(value = "pair", required=true) String pair){
         System.out.print("\nACTIVE THREADS: "+THREADS.toString());
 
-
-
-        for(int i=0;i<THREADS.size();i++){
-            System.out.println("interrupting threads 3");
-            THREADS.get(i).interrupt();
-            System.out.println("interrupting threads 4");
-        }
-
+        killAllThreads();
         coinbasegraphPoints.clearPriceGrowthLineGraphData();
         coinbasePairRelatedData.setPAIR(pair);
         coinbasePairRelatedData.callSellPrice();
@@ -94,8 +85,18 @@ public class webRouter {
 
     @RequestMapping(value = "/orders/{pair}")
     public String orders(Model model,@PathVariable(value = "pair", required=true) String pair){
-        model.addAttribute("pair", pair);
 
+        coinbaseProOrderBook.setPAIR(pair);
+        coinbaseProOrderBook.setOrderBook(2,true,true,"orange","blue");
+        model.addAttribute("pair", pair);
+        model.addAttribute("data", coinbaseProOrderBook.getOrderBookJson());
+
+
+        killAllThreads();
+        coinbaseOrderBookThread cobt = new coinbaseOrderBookThread();
+        Thread order_thread = new Thread(cobt);
+        order_thread.start();
+        THREADS.add(order_thread);
         return "public/orders";
     }
 
@@ -110,6 +111,18 @@ public class webRouter {
         THREADS.add(pricing_thread);
         System.out.println("THREAD 2: "+THREADS.toString());
         return "public/etest";
+
+
+    }
+
+    private void killAllThreads(){
+
+        for(int i=0;i<THREADS.size();i++){
+            System.out.println("interrupting threads 1");
+            THREADS.get(i).interrupt();
+            System.out.println("interrupting threads 2");
+        }
+
 
 
     }

@@ -47,9 +47,6 @@ public class coinbasePairRelatedData {
         System.out.println("SELL RATE DATA: "+rates.toString()+" DEMO RATE: "+demo_original_rate.toString());
 
         if(rates.has("amount") && rates.has("currency")){
-
-
-
             coinbasegraphPoints.addForPriceComparison(demo_original_rate.toString(),rates.get("amount").toString(),date);
         }
 

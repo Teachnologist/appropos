@@ -29,12 +29,11 @@
                  <table class="table">
                      <tr>
                          <td class="vertical-table-header" th:id="|pair-${currencies.pair}|" th:text="${currencies.pair}"></td>
-                         <td ><span th:id="|numdiff-${currencies.pair}|">0.00</span> (<span th:id="|perdiff-${currencies.pair}|">0.0</span>%)</td>
+                         <td><span  th:style="${runtime_diff_interaction} == 'EVEN' ? 'color:inherit;font-style:normal;' : 'color:grey;font-style:italic;'" th:id="|numdiff-${currencies.pair}|" th:text="${currencies.runtime_demo_diff}">0.00</span> (<span th:id="|perdiff-${currencies.pair}|" th:text="${currencies.runtime_demo_diff_percentage}">0.0</span>%)</td>
                      </tr>
-
                      <tr>
                          <td class="vertical-table-header" data-toggle="tooltip" data-placement="right" title="Value of coins at purchase. In demo mode, this is the value on app load.">Purchase Price<span class="warning-text-color">*</span></td>
-                         <td th:text="${currencies.rate}"></td>
+                         <td th:text="${currencies.runtime_rate}"></td>
                      </tr>
                      <tr>
                          <td class="vertical-table-header" >Current Rate</td>
@@ -63,12 +62,11 @@
                       <table class="table">
                           <tr>
                               <td class="vertical-table-header" th:id="|pair-${currencies.pair}|" th:text="${currencies.pair}"></td>
-                              <td ><span th:id="|numdiff-${currencies.pair}|">0.00</span> (<span th:id="|perdiff-${currencies.pair}|"> 0.0</span>%)</td>
+                              <td><span  th:style="${runtime_diff_interaction} == 'EVEN' ? 'color:inherit;font-style:normal;' : 'color:grey;font-style:italic;'" th:id="|numdiff-${currencies.pair}|" th:text="${currencies.runtime_demo_diff}">0.00</span> (<span th:id="|perdiff-${currencies.pair}|" th:text="${currencies.runtime_demo_diff_percentage}">0.0</span>%)</td>
                           </tr>
-
                           <tr>
                               <td class="vertical-table-header" data-toggle="tooltip" data-placement="right" title="Value of coins at purchase. In demo mode, this is the value on app load.">Purchase Price<span class="warning-text-color">*</span></td>
-                              <td th:text="${currencies.rate}"></td>
+                              <td th:text="${currencies.runtime_rate}"></td>
                           </tr>
                           <tr>
                               <td class="vertical-table-header" >Current Rate</td>
@@ -133,16 +131,21 @@
         console.log("No SSE available");
     }
 
-    function editTableData(data){
-        for(var i=0;i<data.length;i++){
+    function editTableData(json){
+        console.log("EDIT TABLE");
+        console.dir(json);
 
+        console.dir(data);
+        for(var q=0;q<json.length;q++){
+            var data = json[q].values;
+        for(var i=0;i<data.length;i++) {
             var pair = data[i].pair;
             console.dir(data[i]);
 
-            var current_span = "currrate-"+pair;
+            var current_span = "currrate-" + pair;
             console.log(current_span);
-            var num_diff_span = "numdiff-"+pair;
-            var perc_diff_span = "perdiff-"+pair;
+            var num_diff_span = "numdiff-" + pair;
+            var perc_diff_span = "perdiff-" + pair;
 
             var curr_ele = document.getElementById(current_span);
             var num_diff_ele = document.getElementById(num_diff_span);
@@ -155,7 +158,7 @@
 
             var color = "inherit";
 
-            switch(data[i].diff_interaction){
+            switch (data[i].diff_interaction) {
                 case "OVER":
                     color = "green";
                     break;
@@ -169,14 +172,7 @@
 
             num_diff_ele.style.color = color;
             perc_diff_ele.style.color = color;
-
-
-
-
-
-
-
-
+            }
         }
 
 

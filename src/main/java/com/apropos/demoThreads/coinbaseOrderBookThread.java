@@ -1,10 +1,9 @@
 package com.apropos.demoThreads;
 
+import com.apropos.classes.coinbaseProOrderBook;
 import com.apropos.classes.coinbaseProducts;
 
-import java.util.Map;
-
-public class coinbaseProductThread implements Runnable {
+public class coinbaseOrderBookThread implements Runnable {
 
 
     private static Boolean running = false;
@@ -14,7 +13,8 @@ public class coinbaseProductThread implements Runnable {
             try {
                 while(true) {
                     System.out.println("currencies thread: " + Thread.currentThread().getName());
-                    coinbaseProducts.setProductCurrencyData(true);
+                    coinbaseProOrderBook.setOrderBook(2,true,true,"orange","blue");
+                    System.out.println(coinbaseProOrderBook.getOrderBookJson());
                     Thread.sleep(5000);
                 }
             } catch (InterruptedException e) {

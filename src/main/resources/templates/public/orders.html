@@ -9,6 +9,11 @@
     <nav th:replace="public/layout/navbar :: navbar"></nav>
     <h4 th:text="${pair}"></h4>
 
+    <canvas id="horizontalBar"></canvas>
+
+
+    <p style="color:red;" th:text="${data}"></p>
+
   <!--end of tab section-->
 </div><!--end of page start-->
 
@@ -27,13 +32,14 @@
     if (!!window.EventSource) {
         console.log("Event source available");
 
-        var source = new EventSource('/sse/demo/currencies');
+        var source = new EventSource('/sse/demo/charts/orders');
 
         source.addEventListener('message', function(e) {
             console.log("currency data");
             console.dir(e.data);
             var d = JSON.parse(e.data);
-            editTableData(d);
+         /*   editTableData(d);*/
+            writeToLineChart1(d);
 
         });
 
@@ -51,6 +57,35 @@
         }, false);
     } else {
         console.log("No SSE available");
+    }
+
+    function writeToLineChart1(data) {
+        console.dir(data);
+        var ctxL = document.getElementById("horizontalBar").getContext('2d');
+        var myHBarChart = new Chart(ctxL, {
+            "type": "horizontalBar",
+            "data": {
+                "labels": data.CHART_LABEL_PRICE,
+                "datasets": [{
+                    "label": "Buyers vs Sellers",
+                    "data": data.CHART_LABEL_SIZE,
+                    "fill": false,
+                    "backgroundColor": data.CHART_LABEL_COLOR,
+                    "hoverBorderWidth":2,
+                    "borderWidth": 1
+                }]
+            },
+            "options": {
+                "animation":{"duration":100,"easing":"linear"},
+                "scales": {
+                    "xAxes": [{
+                        "ticks": {
+                            "beginAtZero": false
+                        }
+                    }]
+                }
+            }
+        });
     }
 
     function editTableData(data){
