@@ -1,9 +1,6 @@
 package com.apropos.crypto.app;
 
-import com.apropos.classes.coinbasePairRelatedData;
-import com.apropos.classes.coinbaseProOrderBook;
-import com.apropos.classes.coinbaseProProducts;
-import com.apropos.classes.coinbaseProducts;
+import com.apropos.classes.*;
 import com.apropos.demoData.coinbaseProductsCache;
 import com.apropos.demoData.coinbasegraphPoints;
 import com.apropos.demoThreads.coinbaseEmailThread;
@@ -78,8 +75,10 @@ public class webRouter {
 
     @RequestMapping(value = "/trades/{pair}")
     public String trades(Model model,@PathVariable(value = "pair", required=true) String pair){
+        coinbaseProTradeBook.setPAIR(pair);
+        coinbaseProTradeBook.setTrades();
         model.addAttribute("pair", pair);
-
+        model.addAttribute("data", coinbaseProTradeBook.getTradeBookMap());
         return "public/trades";
     }
 

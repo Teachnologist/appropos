@@ -1,9 +1,6 @@
 package com.apropos.crypto.app;
 
-import com.apropos.classes.coinbasePairRelatedData;
-import com.apropos.classes.coinbaseProOrderBook;
-import com.apropos.classes.coinbaseProProducts;
-import com.apropos.classes.coinbaseProducts;
+import com.apropos.classes.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -32,6 +29,7 @@ public class appInitialization {
         coinbaseProducts.setDefault(URL);
         coinbasePairRelatedData.setURL(URL);
         coinbaseProOrderBook.setURL(PROURL);
+        coinbaseProTradeBook.setURL(PROURL);
             counter++;
 
     }

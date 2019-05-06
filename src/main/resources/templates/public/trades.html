@@ -9,6 +9,63 @@
     <nav th:replace="public/layout/navbar :: navbar"></nav>
     <h4 th:text="${pair}"></h4>
 
+    <div style="width:100%;">
+        <table style="display:inline; width:49%;" id="buy_table">
+            <thead>
+            <th>
+                Date
+            </th>
+            <th>
+                Side
+            </th>
+            <th>
+                Size
+            </th>
+            <th>
+               Price
+            </th>
+            </thead>
+            <tbody id="buy_tbody">
+            <tr th:each="buy:${data.buys}">
+                <td th:text="${buy.time}"></td>
+                <td th:text="${buy.side}"></td>
+                <td th:text="${buy.size}"></td>
+                <td th:text="${buy.price}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <table style="display:inline; width:49%;" id="sells_table">
+            <thead>
+            <th>
+                Date
+            </th>
+            <th>
+                Side
+            </th>
+            <th>
+                Size
+            </th>
+            <th>
+                Price
+            </th>
+            </thead>
+            <tbody id="sells_tbody">
+            <tr th:each="sell:${data.sells}">
+                <td th:text="${sell.time}"></td>
+                <td th:text="${sell.side}"></td>
+                <td th:text="${sell.size}"></td>
+                <td th:text="${sell.price}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+
+
+
+    </div>
+
+    <p th:text="${data}"></p>
   <!--end of tab section-->
 </div><!--end of page start-->
 
