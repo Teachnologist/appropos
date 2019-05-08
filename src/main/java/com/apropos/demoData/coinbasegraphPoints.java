@@ -23,6 +23,45 @@ public class coinbasegraphPoints {
     private static JSONArray json_price_ma_constant = new JSONArray();
     private static JSONObject json_data = new JSONObject();
 
+    private static JSONArray buy_data = new JSONArray();
+    private static JSONArray sell_data = new JSONArray();
+    private static JSONArray ma_data = new JSONArray();
+
+
+    public static JSONObject getLastTradeData(){
+        JSONObject obj = new JSONObject();
+        obj.put("buy_data",buy_data);
+        obj.put("sell_data",sell_data);
+        obj.put("ma_data",ma_data);
+        return obj;
+    }
+
+    public static void setLastTradeData(String type,String date, String price, String size){
+        coinbaseGraphMath gm = new coinbaseGraphMath();
+        Float price_moving_average = gm.calculateSimpleMovingAverageOfPrice(map_current_prices);
+
+        switch(type){
+            case "buy":
+                buy_data.put(createPriceDataObject(date,price,size));
+                ma_data.put(createPriceDataObject(date,price_moving_average.toString(),"1"));
+                break;
+            case "sell":
+                sell_data.put(createPriceDataObject(date,price,size));
+                ma_data.put(createPriceDataObject(date,price_moving_average.toString(),"1"));
+                break;
+        }
+    }
+
+    private static JSONObject createPriceDataObject(String date, String price, String size){
+        JSONObject obj =  new JSONObject();
+        obj.put("x",date);
+        obj.put("y",price);
+        obj.put("r",size);
+
+        return obj;
+    }
+
+
     public synchronized static Map<String,List> getPriceGrowthLineGraphMap(){
         map_data.put("user_price",map_user_prices);
         map_data.put("current_price",map_current_prices);
@@ -50,7 +89,6 @@ public class coinbasegraphPoints {
        json_formatted_dates = new JSONArray();
        json_data = new JSONObject();
     }
-
 
     private synchronized static void addMapObjectforPriceCompLineGraph(String user_price,String current_price,String formatted_date,String price_moving_average){
 

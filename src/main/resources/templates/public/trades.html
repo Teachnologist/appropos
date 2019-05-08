@@ -84,13 +84,15 @@
     if (!!window.EventSource) {
         console.log("Event source available");
 
-        var source = new EventSource('/sse/demo/currencies');
+        var source = new EventSource('/sse/demo/charts/trades');
 
         source.addEventListener('message', function(e) {
             console.log("currency data");
             console.dir(e.data);
             var d = JSON.parse(e.data);
-            editTableData(d);
+            console.log("****M*****");
+            console.dir(d);
+         /*   editTableData(d);*/
 
         });
 

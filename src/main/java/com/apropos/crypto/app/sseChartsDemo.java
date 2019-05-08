@@ -54,6 +54,26 @@ public class sseChartsDemo {
         }
     }
 
+    @RequestMapping(value="/charts/trades",
+            method= RequestMethod.GET,
+            produces="text/event-stream;charset=UTF-8")
+    public @ResponseBody
+    String sendTrades(HttpServletResponse response) {
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("UTF-8");
+
+        response.setHeader("Content-Type","text/event-stream;charset=UTF-8");
+
+        try {
+            Thread.sleep(5000);
+
+            System.out.println("sse in 2");
+            return "data: " + coinbasegraphPoints.getLastTradeData() + "\n\n";
+        }catch(Exception e){
+            return "data: " +e.toString();
+        }
+    }
+
 
 
 }

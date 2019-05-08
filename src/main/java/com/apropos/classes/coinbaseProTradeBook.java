@@ -1,6 +1,7 @@
 package com.apropos.classes;
 
 import com.apropos.curl.publicAPI;
+import com.apropos.demoData.coinbasegraphPoints;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -71,12 +72,17 @@ public class coinbaseProTradeBook {
             Float sell_volume = 0f;
             Float buy_volume = 0f;
 
+            Boolean capture_last_transaction = false;
 
             for(int i=0;i<trades_data.length();i++){
 
                 JSONObject obj = trades_data.getJSONObject(i);
 
             System.out.println("TEST: "+obj.toString());
+                if(!capture_last_transaction) {
+                    coinbasegraphPoints.setLastTradeData(obj.get("side").toString(),obj.get("time").toString(),obj.get("price").toString(),obj.get("size").toString());
+                    capture_last_transaction = true;
+                }
 
             switch(obj.get("side").toString()){
                 case "sell":
@@ -108,6 +114,8 @@ public class coinbaseProTradeBook {
             json_response.put("sell_value_ratio",sell_value_ratio);
             json_response.put("sells",sells_array);
             json_response.put("buys",buy_array);
+            json_response.put("latest_sell",sells_array.get(0));
+            json_response.put("latest_buy",buy_array.get(0));
 
             Map<String,Object> map_response = new HashMap<String,Object>();
             map_response.put("count_of_sells",count_of_sells);
@@ -117,6 +125,10 @@ public class coinbaseProTradeBook {
             map_response.put("sell_value_ratio",sell_value_ratio);
             map_response.put("sells",sells_list);
             map_response.put("buys",buy_list);
+            map_response.put("latest_sell",sells_list.get(0));
+            map_response.put("latest_buy",buy_list.get(0));
+
+
 
             TRADE_BOOK_JSON = json_response;
             TRADE_BOOK_MAP = map_response;
