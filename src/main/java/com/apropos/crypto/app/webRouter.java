@@ -3,10 +3,7 @@ package com.apropos.crypto.app;
 import com.apropos.classes.*;
 import com.apropos.demoData.coinbaseProductsCache;
 import com.apropos.demoData.coinbasegraphPoints;
-import com.apropos.demoThreads.coinbaseEmailThread;
-import com.apropos.demoThreads.coinbaseOrderBookThread;
-import com.apropos.demoThreads.coinbasePricingThread;
-import com.apropos.demoThreads.coinbaseProductThread;
+import com.apropos.demoThreads.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,7 +62,7 @@ public class webRouter {
         coinbasePricingThread cpgt = new coinbasePricingThread();
         Thread pricing_thread = new Thread(cpgt);
         pricing_thread.start();
-        THREADS.add(pricing_thread);
+        //THREADS.add(pricing_thread);
         System.out.println("THREAD 2: "+THREADS.toString());
 
         model.addAttribute("pair", pair);
@@ -79,6 +76,9 @@ public class webRouter {
         coinbaseProTradeBook.setTrades();
         model.addAttribute("pair", pair);
         model.addAttribute("data", coinbaseProTradeBook.getTradeBookMap());
+        coinbaseTradeBookThread ctbt = new coinbaseTradeBookThread();
+        Thread trade_thread = new Thread(ctbt);
+        trade_thread.start();
         return "public/trades";
     }
 

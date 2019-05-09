@@ -12,9 +12,8 @@ public class coinbaseTradeBookThread implements Runnable {
 
             try {
                 while(true) {
-                    System.out.println("currencies thread: " + Thread.currentThread().getName());
+                    System.out.println("trades thread: " + Thread.currentThread().getName());
                     coinbaseProTradeBook.setTrades();
-                    System.out.println(coinbaseProTradeBook.getTradeBookJson());
                     Thread.sleep(5000);
                 }
             } catch (InterruptedException e) {

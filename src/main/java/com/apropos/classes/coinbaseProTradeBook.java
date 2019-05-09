@@ -80,6 +80,7 @@ public class coinbaseProTradeBook {
 
             System.out.println("TEST: "+obj.toString());
                 if(!capture_last_transaction) {
+                    System.out.println("CAPTURING LAST....");
                     coinbasegraphPoints.setLastTradeData(obj.get("side").toString(),obj.get("time").toString(),obj.get("price").toString(),obj.get("size").toString());
                     capture_last_transaction = true;
                 }

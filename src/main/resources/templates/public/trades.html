@@ -8,7 +8,7 @@
 <div style="height: 100vh">
     <nav th:replace="public/layout/navbar :: navbar"></nav>
     <h4 th:text="${pair}"></h4>
-
+    <canvas id="bubbleChart"></canvas>
     <div style="width:100%;">
         <table style="display:inline; width:49%;" id="buy_table">
             <thead>
@@ -92,7 +92,7 @@
             var d = JSON.parse(e.data);
             console.log("****M*****");
             console.dir(d);
-         /*   editTableData(d);*/
+            editTableData(d);
 
         });
 
@@ -113,50 +113,28 @@
     }
 
     function editTableData(data){
-        for(var i=0;i<data.length;i++){
-
-            var pair = data[i].pair;
-            console.dir(data[i]);
-
-            var current_span = "currrate-"+pair;
-            console.log(current_span);
-            var num_diff_span = "numdiff-"+pair;
-            var perc_diff_span = "perdiff-"+pair;
-
-            var curr_ele = document.getElementById(current_span);
-            var num_diff_ele = document.getElementById(num_diff_span);
-            var perc_diff_ele = document.getElementById(perc_diff_span);
-
-
-            curr_ele.innerHTML = data[i].rate;
-            num_diff_ele.innerHTML = data[i].demo_diff;
-            perc_diff_ele.innerHTML = data[i].demo_diff_percentage;
-
-            var color = "inherit";
-
-            switch(data[i].diff_interaction){
-                case "OVER":
-                    color = "green";
-                    break;
-                case "UNDER":
-                    color = "red";
-                    break;
-                default:
-                    color = "inherit";
-                    break;
+        var ctxBc = document.getElementById('bubbleChart').getContext('2d');
+        var bubbleChart = new Chart(ctxBc, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'Buy',
+                    data: data.buy_data,
+                    backgroundColor: "green",
+                    hoverBackgroundColor: "red"
+                }, {
+                    label: 'Sell',
+                    data: data.sell_data,
+                    backgroundColor: "orange",
+                    hoverBackgroundColor: "red"
+                }, {
+                    label: 'Average',
+                    data: data.ma_data,
+                    backgroundColor: "blue",
+                    hoverBackgroundColor: "brown"
+                }]
             }
-
-            num_diff_ele.style.color = color;
-            perc_diff_ele.style.color = color;
-
-
-
-
-
-
-
-
-        }
+        });
 
 
     }

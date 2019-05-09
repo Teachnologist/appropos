@@ -3,6 +3,7 @@ package com.apropos.demoData;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +28,10 @@ public class coinbasegraphPoints {
     private static JSONArray sell_data = new JSONArray();
     private static JSONArray ma_data = new JSONArray();
 
+    private static Integer iteration = 0;
 
-    public static JSONObject getLastTradeData(){
+
+    public synchronized static JSONObject getLastTradeData(){
         JSONObject obj = new JSONObject();
         obj.put("buy_data",buy_data);
         obj.put("sell_data",sell_data);
@@ -36,23 +39,31 @@ public class coinbasegraphPoints {
         return obj;
     }
 
-    public static void setLastTradeData(String type,String date, String price, String size){
+    public synchronized static void setLastTradeData(String type,String date_string, String price, String size){
         coinbaseGraphMath gm = new coinbaseGraphMath();
         Float price_moving_average = gm.calculateSimpleMovingAverageOfPrice(map_current_prices);
 
+        Instant parsed_dated = Instant.parse(date_string);
+        Long date = parsed_dated.getEpochSecond();
+
+        System.out.println(iteration+" SET LAST TRADE DATA: "+type);
+
         switch(type){
             case "buy":
-                buy_data.put(createPriceDataObject(date,price,size));
-                ma_data.put(createPriceDataObject(date,price_moving_average.toString(),"1"));
+                buy_data.put(createPriceDataObject(date.toString(),price,size));
+                ma_data.put(createPriceDataObject(date.toString(),price_moving_average.toString(),"1"));
+                iteration++;
                 break;
             case "sell":
-                sell_data.put(createPriceDataObject(date,price,size));
-                ma_data.put(createPriceDataObject(date,price_moving_average.toString(),"1"));
+                sell_data.put(createPriceDataObject(date.toString(),price,size));
+                ma_data.put(createPriceDataObject(date.toString(),price_moving_average.toString(),"1"));
+                iteration++;
                 break;
         }
+
     }
 
-    private static JSONObject createPriceDataObject(String date, String price, String size){
+    private synchronized static JSONObject createPriceDataObject(String date, String price, String size){
         JSONObject obj =  new JSONObject();
         obj.put("x",date);
         obj.put("y",price);
