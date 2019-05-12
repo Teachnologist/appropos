@@ -3,6 +3,7 @@ package com.apropos.classes;
 import com.apropos.curl.publicAPI;
 import com.apropos.demoData.coinbaseProductsCache;
 import com.apropos.demoData.coinbasegraphPoints;
+import com.apropos.objects.priceData;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -50,6 +51,67 @@ public class coinbaseProducts {
         return PRODUCT_CURRENCY_DATA_MAP;
     }
 
+    public static void setProductCurrencyData2(){
+        List base_currencies = coinbaseProProducts.getBaseCurrencies();
+        List quote_currencies = coinbaseProProducts.getQuoteCurrencies();
+
+        List<Map<String, String>> listofobject = new ArrayList<Map<String, String>>();
+        List<Map<String,Object>> map_arr = new ArrayList<Map<String,Object>>();
+        Integer ordinal_index_key = 0;
+
+        for(int i = 0;i<quote_currencies.size();i++) {
+            String q_currency = quote_currencies.get(i).toString().toUpperCase();
+            Map<String, String> quoteobject = new HashMap<String, String>();
+            Map<String, Object> bigobject = new HashMap<String, Object>();
+            if (!base_currencies.contains(q_currency)) {
+
+
+                for (int q = 0; q < base_currencies.size(); q++) {
+
+                    String uppercase_base = base_currencies.get(q).toString().toUpperCase();
+                    String pair = uppercase_base+"-"+q_currency;
+                    if(coinbaseProBackgroundTasks1.getPriceDataByPair(pair) != null) {
+                        priceData price_data = coinbaseProBackgroundTasks1.getPriceDataByPair(pair);
+                        quoteobject.put("quote", uppercase_base);
+                        quoteobject.put("rate", price_data.getPrice().toString());
+                        quoteobject.put("pair", pair);
+                        quoteobject.put("invpair", pair);
+                        quoteobject.put("validpair", pair);
+                        quoteobject.put(uppercase_base, price_data.getPrice().toString());
+
+
+                        quoteobject.put("runtime_rate", price_data.getDemo_purchase_price().toString());
+                        quoteobject.put("runtime_demo_diff", "runtime_demo_diff");
+                        //     quoteobject.put("runtime_demo_diff_percentage", String.format("%.2f", "94.12345"));
+                        quoteobject.put("runtime_demo_diff_percentage", "99");
+
+                        quoteobject.put("runtime_diff_interaction", "runtime_diff_interaction");
+
+
+                        quoteobject.put("demo_diff", "demo_diff");
+                        quoteobject.put("demo_diff_percentage", "99");
+                        //    quoteobject.put("diff_interaction", "diff_interaction");
+
+                        listofobject.add(quoteobject);
+                    }
+
+                }
+                String date = new Date().toString();
+                bigobject.put("key", q_currency);
+                bigobject.put("date", date);
+                bigobject.put("values", listofobject);
+                bigobject.put("index", ordinal_index_key);
+                ordinal_index_key++;
+
+                map_arr.add(bigobject);
+            }
+
+        }
+
+        PRODUCT_CURRENCY_DATA_MAP = map_arr;
+
+
+    }
     public static void setProductCurrencyData(Boolean include_json){
 
         List base_currencies = coinbaseProProducts.getBaseCurrencies();
