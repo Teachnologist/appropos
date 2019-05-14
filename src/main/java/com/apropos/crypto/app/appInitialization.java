@@ -30,9 +30,6 @@ public class appInitialization {
         coinbasePairRelatedData.setURL(URL);
         coinbaseProOrderBook.setURL(PROURL);
         coinbaseProTradeBook.setURL(PROURL);
-        System.out.println("******BACKGROUND****");
-        coinbaseProBackgroundTasks1.runCurrencyData(URL);
-        System.out.println("******BACKGROUND D****");
             counter++;
 
     }

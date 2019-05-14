@@ -29,6 +29,7 @@ public class webRouter {
 
     public void background(){
         if(thread_name == null) {
+
             Background1 background = new Background1();
             active_1 = new Thread(background);
             active_1.start();
@@ -42,6 +43,9 @@ public class webRouter {
     @RequestMapping(value = "/")
     public String index(Model model){
         background();
+
+
+        model.addAttribute("products","This is the authenticated page");
 
         if(access_code != null){
             model.addAttribute("test","This is the authenticated page");

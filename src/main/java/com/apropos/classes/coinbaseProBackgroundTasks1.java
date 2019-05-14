@@ -1,6 +1,7 @@
 package com.apropos.classes;
 
 import com.apropos.curl.publicAPI;
+import com.apropos.objects.pairManager;
 import com.apropos.objects.priceData;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,6 +27,10 @@ public class coinbaseProBackgroundTasks1 {
         return null;
     }
 
+    public static Map<String,priceData> getPriceDataMap(){
+            return PAIR_MAP;
+    }
+
 
     public static void runCurrencyData(String url) {
 URL = url;
@@ -43,7 +48,48 @@ URL = url;
 
         Integer ordinal_index_key = 0;
 
-        for (int i = 0; i < quote_currencies.size(); i++)
+        System.out.println("*NEW ALGORITHM*");
+
+        for (int q = 0; q < base_currencies.size(); q++) {
+            String uppercase_base = base_currencies.get(q).toString().toUpperCase();
+            JSONObject currency_obj = getCurrencyRateData(uppercase_base);
+
+            Iterator<String> currency_rates = currency_obj.keys();
+
+            while(currency_rates.hasNext()) {
+                String currency_rate = currency_rates.next();
+           //     System.out.println("NEXT: "+currency_rate);
+
+                if (currency_obj.get(currency_rate) != null &&
+                        quote_currencies.contains(currency_rate) &&
+                        currency_rate.toUpperCase() != uppercase_base) {
+
+                    pairManager pair_manager = new pairManager(uppercase_base,currency_rate.toUpperCase());
+                    String pair = pair_manager.getPAIR();
+                    String inv_pair = pair_manager.getIPAIR();
+                    String rate = currency_obj.get(currency_rate).toString();
+
+                    setMap(pair_manager, Double.parseDouble(rate));
+
+
+                    System.out.println(pair+" ### "+inv_pair+" !!! "+rate);
+                    // do something with jsonObject here
+                }
+            }
+
+   /*         System.out.println("#BASE: "+uppercase_base);
+
+            if(rates1 != null) {
+
+                System.out.print(rates1.toString());
+            }else{
+                System.out.print(uppercase_base+" is null");
+            }*/
+        }
+
+        System.out.println("*LESS CALLS TO API!!!*");
+
+      /*  for (int i = 0; i < quote_currencies.size(); i++)
         {
             String q_currency = quote_currencies.get(i).toString().toUpperCase();
             if (!base_currencies.contains(q_currency)) {
@@ -59,11 +105,11 @@ URL = url;
 
                 }
             }
-        }
+        }*/
     }
 
-    private static void setMap(String fiat, String crypto, Double value, Double purchase_price){
-        String combo = crypto+"-"+fiat;
+    private static void setMap(pairManager pair_manager, Double value){
+        String combo = pair_manager.getPAIR();
         if(PAIR_MAP.containsKey(combo)){
            priceData price_data = PAIR_MAP.get(combo);
             List list_values = price_data.getPrice_list();
@@ -73,7 +119,7 @@ URL = url;
         }else{
             List list = new ArrayList();
             list.add(value);
-            PAIR_MAP.put(combo,new priceData(list,value,purchase_price));
+            PAIR_MAP.put(combo,new priceData(list,value,value));
         }
     }
 
