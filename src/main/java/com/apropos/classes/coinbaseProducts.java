@@ -15,7 +15,7 @@ public class coinbaseProducts {
 
     private static String URL;
 
-    private static List<Map<String,Object>> PRODUCT_CURRENCY_DATA_MAP;
+    private static List<Object> PRODUCT_CURRENCY_DATA_MAP;
 
     private static JSONArray PRODUCT_CURRENCY_DATA_JSON;
 
@@ -49,7 +49,7 @@ public class coinbaseProducts {
     }
 
 
-    public synchronized static List<Map<String,Object>> getProductCurrenciesData(){
+    public synchronized static List<Object> getProductCurrenciesData(){
         return PRODUCT_CURRENCY_DATA_MAP;
     }
 
@@ -65,41 +65,19 @@ public class coinbaseProducts {
 
         Map<String, priceData> price_map = coinbaseProBackgroundTasks1.getPriceDataMap();
 
-        JSONArray json_arr = new JSONArray();
+        Map<String,Object> map_of_bases = new HashMap<String,Object>();
+        Map<String,Object> wrapper = new HashMap<String,Object>();
 
 
-        JSONObject big_json_obj = new JSONObject();
 
-        Map<String, Object> bigobject = new HashMap<String, Object>();
-
-
-        Map<String, Map> storequotemap = new HashMap<String, Map>();
-        Map<String, Map> storequotejason = new HashMap<String, Map>();
-
-        JSONObject quote_json_obj = new JSONObject();
-        Map<String, String> quoteobject = new HashMap<String, String>();
 
 
         for (Map.Entry<String, priceData> marker : price_map.entrySet()) {
-            System.out.println("Key = " + marker.getKey() +
-                    ", Value = " + marker.getValue().getDemo_purchase_price());
 
             String pair = marker.getKey();
-
-            if(quoteobject.get("pair").toString().contains(pair.split("-")[1])){
-
-
-
-            }else{
-                //instantiate arraygi
-
-            }
-
-            /*quote object is short list of primary coinbase fiats, the second factor of pairManager;
-            * View is arranged by this data*/
             String base_obj = pair.split("-")[0];
             String quote_obj = pair.split("-")[1];
-            String inv_pair = quote_obj + " " + base_obj;
+            String inv_pair = quote_obj + "-" + base_obj;
 
 
             Float runtime_demo_diff = Float.parseFloat(marker.getValue().getPrice().toString()) - Float.parseFloat(marker.getValue().getDemo_purchase_price().toString());
@@ -109,13 +87,16 @@ public class coinbaseProducts {
 
             String diff_interaction = getCostDifferenceMessage(runtime_demo_diff);
             String druntime_interaction = getCostDifferenceMessage(runtime_demo_diff);
+            System.out.println("Key = " + marker.getKey() +
+                    ", Value = " + marker.getValue().getDemo_purchase_price());
 
-
+            Map<String, Object> quoteobject = new HashMap<String, Object>();
+            quoteobject.put("key", quote_obj);
             quoteobject.put("quote", pair);
             quoteobject.put("rate", marker.getValue().getPrice().toString());
             quoteobject.put("pair", pair);
             quoteobject.put("invpair", inv_pair);
-            quoteobject.put(base_obj, marker.getValue().getPrice().toString());
+            quoteobject.put(quote_obj, marker.getValue().getPrice().toString());
             quoteobject.put("runtime_rate", marker.getValue().getDemo_purchase_price().toString());
             quoteobject.put("runtime_demo_diff", runtime_demo_diff.toString());
             //     quoteobject.put("runtime_demo_diff_percentage", String.format("%.2f", "94.12345"));
@@ -125,67 +106,72 @@ public class coinbaseProducts {
             quoteobject.put("demo_diff_percentage", String.format("%.2f", runtime_demo_diff_percentage));
             quoteobject.put("diff_interaction", diff_interaction);
 
-            listofobject.add(quoteobject);
+
+            if (map_of_bases.containsKey(quote_obj)) {
+
+                List arraylist = (List) map_of_bases.get(quote_obj);
+                quoteobject.put("index", arraylist.size());
+                arraylist.add(quoteobject);
+
+                map_of_bases.put(quote_obj, arraylist);
+            } else {
+                //instantiate array
+                List arraylist = new ArrayList();
+                quoteobject.put("index", 0);
+                arraylist.add(quoteobject);
+
+                map_of_bases.put(quote_obj, arraylist);
+
+            }
+
+        }
+      /*  BTC=[{runtime_demo_diff=0.0, runtime_demo_diff_percentage=0.0, index=0,
+      demo_diff=0.0, pair=BTC-ETH, BTC=38.54307188282906, quote=BTC-ETH, demo_diff_percentage=0.00, rate=38.54307188282906,
+      runtime_diff_interaction=runtime_diff_interaction, runtime_rate=38.54307188282906, diff_interaction=EVEN, invpair=ETH BTC}, */
+
+
+            /*quote object is short list of primary coinbase fiats, the second factor of pairManager;
+            * View is arranged by this data*/
+
+
+
+
+System.out.println("map_of_bases");
+            System.out.print(map_of_bases);
+
+            Integer count = 0;
+
+            /***CONVERT FOR FRONTEND***/
+            List<Object> map_list = new ArrayList<Object>();
+        for (Map.Entry<String, Object> obj : map_of_bases.entrySet()) {
+System.out.println(obj);
+Map<String,Object> map = new HashMap<String,Object>();
+map.put("key",obj.getKey());
+            map.put("index",count);
+            map.put("data",obj.getValue());
+            map_list.add(map);
+            System.out.print(obj);
+            System.out.println("****PRINTED*******");
+
+            count++;
+        }
+
+        PRODUCT_CURRENCY_DATA_MAP = map_list;
+
+
+
 
                             /*for mapping - traditional page render */
                              /*for json - ajax page render */
 
-            if (true) {
-
-                quote_json_obj.put("quote", quoteobject);
-                quote_json_obj.put("rate", marker.getValue().getPrice().toString());
-                quote_json_obj.put("pair", pair);
-                quote_json_obj.put("invpair", inv_pair);
-
-                quote_json_obj.put("validpair", pair);
-                quote_json_obj.put(base_obj, marker.getValue().getPrice().toString());
-
-                quote_json_obj.put("runtime_rate", marker.getValue().getDemo_purchase_price().toString());
-                quote_json_obj.put("runtime_demo_diff", runtime_demo_diff.toString());
-                quote_json_obj.put("runtime_demo_diff_percentage", String.format("%.2f", druntime_diff_percentage));
-                quote_json_obj.put("runtime_diff_interaction", druntime_interaction);
-
-                quote_json_obj.put("demo_diff", runtime_demo_diff.toString());
-                quote_json_obj.put("demo_diff_percentage", String.format("%.2f", druntime_diff_percentage));
-                quote_json_obj.put("diff_interaction", diff_interaction);
-                listofjson.put(quote_json_obj);
-            }
-
-
-            String date = new Date().toString();
-            bigobject.put("key", quote_obj);
-            bigobject.put("date", date);
-            bigobject.put("values", listofobject);
-            bigobject.put("index", ordinal_index_key);
-
-            map_arr.add(bigobject);
-
-            if (true) {
-                big_json_obj.put("key",quote_obj);
-                big_json_obj.put("date", date);
-                big_json_obj.put("values", listofjson);
-                big_json_obj.put("index", ordinal_index_key);
-                json_arr.put(big_json_obj);
-            }
-            ordinal_index_key++;
-
-        }
-
 
         System.out.println("Complete..."+"\n");
 
-                System.out.print("\n"+map_arr.toString()+"\n");
-                System.out.print("\n"+json_arr.toString()+"\n");
-                System.out.println("\n"+"....Complete"+"\n");
-                PRODUCT_CURRENCY_DATA_MAP = map_arr;
-                PRODUCT_CURRENCY_DATA_JSON = json_arr;
-
-        PRODUCT_CURRENCY_DATA_MAP = map_arr;
-        PRODUCT_CURRENCY_DATA_JSON = json_arr;
-
-
 
     }
+
+
+
     public static void setProductCurrencyData(Boolean include_json){
 
         List base_currencies = coinbaseProProducts.getBaseCurrencies();
@@ -339,8 +325,7 @@ public class coinbaseProducts {
         System.out.print("\n"+map_arr.toString()+"\n");
         System.out.print("\n"+json_arr.toString()+"\n");
         System.out.println("\n"+"....Complete"+"\n");
-        PRODUCT_CURRENCY_DATA_MAP = map_arr;
-        PRODUCT_CURRENCY_DATA_JSON = json_arr;
+     //   PRODUCT_CURRENCY_DATA_MAP = map_arr;
     }
 
     private static JSONObject getCurrencyRateData(String quote){

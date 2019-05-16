@@ -11,10 +11,12 @@
     <!--secondary header-->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" th:each="list:${products}">
-            <a th:if="${list.index} == 0" class="nav-link active" th:id="|${list.key}-tab|" data-toggle="tab" th:href="|#${list.key}-panel|" role="tab" th:aria-controls="|${list.key}-panel|"
+
+        <a th:if="${list.index} == 0" class="nav-link active" th:id="|${list.key}-tab|" data-toggle="tab" th:href="|#${list.key}-panel|" role="tab" th:aria-controls="|${list.key}-panel|"
                aria-selected="true" th:text="|${list.key}|"></a>
             <a th:if="${list.index} > 0" class="nav-link" th:id="|${list.key}-tab|" data-toggle="tab" th:href="|#${list.key}-panel|" role="tab" th:aria-controls="|${list.key}-panel|"
             aria-selected="false" th:text="${list.key}"></a>
+
         </li>
     </ul>
 
@@ -22,9 +24,10 @@
 <!-- Jumbotron -->
     <div class="tab-content">
         <!-- Active Jumbotron -->
-      <div th:if="${currency.index} == 0" class="tab-pane fade show active" role="tabpanel" th:aria-labelledby="|${currency.key}-tab|" th:id="|${currency.key}-panel|" th:each="currency:${products}">
-         <div class="jumbotron" th:id="|jumbo-${currencies.pair}|" th:each="currencies:${currency.values}">
-
+      <div th:if="${currency.index} == 0" class="tab-pane fade show active" role="tabpanel"
+           th:aria-labelledby="|${currency.key}-tab|" th:id="|${currency.key}-panel|"
+           th:each="currency:${products}">
+         <div class="jumbotron" th:id="|jumbo-${currencies.pair}|" th:each="currencies:${currency.data}">
              <div class="table-responsive-sm">
                  <table class="table">
                      <tr>
@@ -45,7 +48,7 @@
     <!-- Grid row -->
 
 
-    <div class="pt-2">
+   <div class="pt-2">
         <a th:href="|/metrics/${currencies.invpair}|"><button type="button" class="btn btn-blue waves-effect"><i class="fas fa-tachometer-alt"></i>Metrics</button></a>
         <a th:href="|/trades/${currencies.invpair}|"><button type="button" class="btn btn-outline-primary waves-effect"><i class="fas fa-book"></i>Trades</button></a>
         <a th:href="|/orders/${currencies.invpair}|"><button type="button" class="btn btn-outline-primary waves-effect"><i class="fas fa-book"></i>Orders</button></a>
@@ -55,9 +58,9 @@
       </div>
 <!-- Active Jumbotron -->
           <!-- INactive Jumbotron -->
-          <div th:if="${currency.index} > 0" class="tab-pane fade" role="tabpanel" th:aria-labelledby="|${currency.key}-tab|" th:id="|${currency.key}-panel|" th:each="currency:${products}">
-              <div class="jumbotron" th:id="|jumbo-${currencies.pair}|" th:each="currencies:${currency.values}">
-
+          <div th:if="${currency.index} > 0" class="tab-pane fade" role="tabpanel"
+               th:aria-labelledby="|${currency.key}-tab|" th:id="|${currency.key}-panel|" th:each="currency:${products}">
+              <div class="jumbotron" th:id="|jumbo-${currencies.pair}|" th:each="currencies:${currency.data}">
                   <div class="table-responsive-sm">
                       <table class="table">
                           <tr>

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.apropos.demoData.coinbasegraphPoints.clearPriceGrowthLineGraphData;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -42,37 +43,11 @@ public class webRouter {
 
     @RequestMapping(value = "/")
     public String index(Model model){
-        background();
-
-
-        model.addAttribute("products","This is the authenticated page");
-
-        if(access_code != null){
-            model.addAttribute("test","This is the authenticated page");
-            return "authenticated/index";
-        }
-
+       // background();
+        coinbaseProBackgroundTasks1.start("https://api.coinbase.com/v2");
         coinbaseProducts.setProductCurrencyData2();
         List products = coinbaseProducts.getProductCurrenciesData();
-
-        if(init_site_counter < 1) {
-            coinbaseProductsCache.setCurrency_product_data(products);
-
-        }
-
-        System.out.println("Products");
-        System.out.print(products);
-        System.out.println("B Products");
         model.addAttribute("products", products);
-
-        killAllThreads();
-        coinbaseProductThread cpdt = new coinbaseProductThread();
-        Thread product_thread = new Thread(cpdt);
-        product_thread.start();
-        THREADS.add(product_thread);
-        System.out.println("THREAD 1: "+THREADS.toString());
-
-
         init_site_counter++;
         return "public/index";
     }

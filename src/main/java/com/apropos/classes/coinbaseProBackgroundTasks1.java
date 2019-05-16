@@ -119,7 +119,11 @@ URL = url;
         }else{
             List list = new ArrayList();
             list.add(value);
-            PAIR_MAP.put(combo,new priceData(list,value,value));
+            /*sets price a user would pay at moment of page load
+            To be substituted for entries
+             */
+            Double pprice = value + (value*(0.0149+0.0149+0.0149));
+            PAIR_MAP.put(combo,new priceData(list,value,pprice));
         }
     }
 
