@@ -30,7 +30,7 @@ public class webRouter {
 
     public void background(){
         if(thread_name == null) {
-
+            coinbaseProBackgroundTasks1.start("https://api.coinbase.com/v2");
             Background1 background = new Background1();
             active_1 = new Thread(background);
             active_1.start();
@@ -44,7 +44,6 @@ public class webRouter {
     @RequestMapping(value = "/")
     public String index(Model model){
         background();
-        coinbaseProBackgroundTasks1.start("https://api.coinbase.com/v2");
         coinbaseProducts.setProductCurrencyData2();
         List products = coinbaseProducts.getProductCurrenciesData();
         model.addAttribute("products", products);
@@ -57,7 +56,6 @@ public class webRouter {
     public String metrics(Model model,@PathVariable(value = "pair", required=true) String pair){
         System.out.print("\nACTIVE THREADS: "+THREADS.toString());
         background();
-
         killAllThreads();
         coinbasegraphPoints.clearPriceGrowthLineGraphData();
         coinbasePairRelatedData.setPAIR(pair);
@@ -71,6 +69,9 @@ public class webRouter {
 
         model.addAttribute("pair", pair);
 
+        model.addAttribute("pair_value", coinbaseProBackgroundTasks1.getCurrentPriceByPair(pair));
+        model.addAttribute("investment_value", coinbaseProBackgroundTasks1.getDemoPurchasePriceByPair(pair));
+        model.addAttribute("moving_average", coinbaseProBackgroundTasks1.getMovingAverageByPair(pair));
 
         return "public/metrics";
     }
@@ -85,6 +86,9 @@ public class webRouter {
         coinbaseTradeBookThread ctbt = new coinbaseTradeBookThread();
         Thread trade_thread = new Thread(ctbt);
         trade_thread.start();
+        model.addAttribute("pair_value", coinbaseProBackgroundTasks1.getCurrentPriceByPair(pair));
+        model.addAttribute("investment_value", coinbaseProBackgroundTasks1.getDemoPurchasePriceByPair(pair));
+        model.addAttribute("moving_average", coinbaseProBackgroundTasks1.getMovingAverageByPair(pair));
         return "public/trades";
     }
 
@@ -102,6 +106,9 @@ public class webRouter {
         Thread order_thread = new Thread(cobt);
         order_thread.start();
         THREADS.add(order_thread);
+        model.addAttribute("pair_value", coinbaseProBackgroundTasks1.getCurrentPriceByPair(pair));
+        model.addAttribute("investment_value", coinbaseProBackgroundTasks1.getDemoPurchasePriceByPair(pair));
+        model.addAttribute("moving_average", coinbaseProBackgroundTasks1.getMovingAverageByPair(pair));
         return "public/orders";
     }
 

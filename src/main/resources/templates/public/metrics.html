@@ -7,7 +7,9 @@
 <!-- Start your page here-->
 <div style="height: 100vh">
     <nav th:replace="public/layout/navbar-secondary :: navbar(title=${pair})"></nav>
-    <h4 th:text="${pair}"></h4>
+    <!--build ticker here for default value control web router-->
+    <div th:replace="public/layout/ticker-marquee :: ticker_marquee(pair=${pair},pair_value=${pair_value},investment_value=${investment_value},moving_average=${moving_average})"></div>
+    <!--build ticker here for default value end-->
     <canvas id="lineChart"></canvas>
 
   <!--end of tab section-->
