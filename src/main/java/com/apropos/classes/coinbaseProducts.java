@@ -68,10 +68,6 @@ public class coinbaseProducts {
         Map<String,Object> map_of_bases = new HashMap<String,Object>();
         Map<String,Object> wrapper = new HashMap<String,Object>();
 
-
-
-
-
         for (Map.Entry<String, priceData> marker : price_map.entrySet()) {
 
             String pair = marker.getKey();
@@ -81,7 +77,7 @@ public class coinbaseProducts {
 
 
             Float runtime_demo_diff = Float.parseFloat(marker.getValue().getPrice().toString()) - Float.parseFloat(marker.getValue().getDemo_purchase_price().toString());
-            Float runtime_demo_diff_percentage = runtime_demo_diff / Float.parseFloat(marker.getValue().getPrice().toString());
+            Float runtime_demo_diff_percentage = runtime_demo_diff / Float.parseFloat(marker.getValue().getPrice().toString()) * 100;
             Float druntime_diff_percentage = (runtime_demo_diff / Float.parseFloat(marker.getValue().getPrice().toString())) * 100;
 
 
@@ -106,65 +102,83 @@ public class coinbaseProducts {
             quoteobject.put("demo_diff_percentage", String.format("%.2f", runtime_demo_diff_percentage));
             quoteobject.put("diff_interaction", diff_interaction);
 
-
+            JSONObject json_quote = new JSONObject(quoteobject);
             if (map_of_bases.containsKey(quote_obj)) {
 
                 List arraylist = (List) map_of_bases.get(quote_obj);
+                JSONArray jsonlist = (JSONArray) map_of_bases.get("json-"+quote_obj);
                 quoteobject.put("index", arraylist.size());
                 arraylist.add(quoteobject);
+                jsonlist.put(json_quote);
 
                 map_of_bases.put(quote_obj, arraylist);
+                map_of_bases.put("json-"+quote_obj, jsonlist);
             } else {
                 //instantiate array
                 List arraylist = new ArrayList();
+                JSONArray jsonlist = new JSONArray();
+
                 quoteobject.put("index", 0);
                 arraylist.add(quoteobject);
+                jsonlist.put(json_quote);
 
                 map_of_bases.put(quote_obj, arraylist);
+                map_of_bases.put("json-"+quote_obj, jsonlist);
 
             }
 
         }
-      /*  BTC=[{runtime_demo_diff=0.0, runtime_demo_diff_percentage=0.0, index=0,
-      demo_diff=0.0, pair=BTC-ETH, BTC=38.54307188282906, quote=BTC-ETH, demo_diff_percentage=0.00, rate=38.54307188282906,
-      runtime_diff_interaction=runtime_diff_interaction, runtime_rate=38.54307188282906, diff_interaction=EVEN, invpair=ETH BTC}, */
-
-
             /*quote object is short list of primary coinbase fiats, the second factor of pairManager;
             * View is arranged by this data*/
 
-
-
+        System.out.println("key set");
+        System.out.println(map_of_bases.keySet());
 
 System.out.println("map_of_bases");
             System.out.print(map_of_bases);
 
-            Integer count = 0;
+            Integer map_count = 0;
+        Integer json_count =0;
 
             /***CONVERT FOR FRONTEND***/
             List<Object> map_list = new ArrayList<Object>();
+        JSONArray json_list = new JSONArray();
+
+
         for (Map.Entry<String, Object> obj : map_of_bases.entrySet()) {
 System.out.println(obj);
-Map<String,Object> map = new HashMap<String,Object>();
-map.put("key",obj.getKey());
-            map.put("index",count);
-            map.put("data",obj.getValue());
-            map_list.add(map);
-            System.out.print(obj);
-            System.out.println("****PRINTED*******");
 
-            count++;
+if(obj.getKey().contains("json-")){
+    JSONObject json_obj= new JSONObject();
+    json_obj.put("key",obj.getKey().replace("json-",""));
+    json_obj.put("index",json_count);
+    json_obj.put("data",obj.getValue());
+    json_list.put(json_obj);
+    json_count++;
+
+}else{
+
+    Map<String,Object> map = new HashMap<String,Object>();
+    map.put("key",obj.getKey());
+    map.put("index",map_count);
+    map.put("data",obj.getValue());
+    map_list.add(map);
+    map_count++;
+
+}
         }
-
-        PRODUCT_CURRENCY_DATA_MAP = map_list;
-
-
-
-
-                            /*for mapping - traditional page render */
-                             /*for json - ajax page render */
+/*for mapping - traditional page render */
+        PRODUCT_CURRENCY_DATA_JSON =  json_list;
+        /*for json - ajax page render */
+                PRODUCT_CURRENCY_DATA_MAP = map_list;
 
 
+
+
+
+
+
+        System.out.println(json_list);
         System.out.println("Complete..."+"\n");
 
 

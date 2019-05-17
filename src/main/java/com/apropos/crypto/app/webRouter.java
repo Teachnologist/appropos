@@ -43,11 +43,12 @@ public class webRouter {
 
     @RequestMapping(value = "/")
     public String index(Model model){
-       // background();
+        background();
         coinbaseProBackgroundTasks1.start("https://api.coinbase.com/v2");
         coinbaseProducts.setProductCurrencyData2();
         List products = coinbaseProducts.getProductCurrenciesData();
         model.addAttribute("products", products);
+        background();
         init_site_counter++;
         return "public/index";
     }

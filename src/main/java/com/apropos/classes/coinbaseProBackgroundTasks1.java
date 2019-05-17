@@ -14,11 +14,36 @@ public class coinbaseProBackgroundTasks1 {
     private static String URL;
     private static Map<String,priceData> PAIR_MAP = new HashMap<String,priceData>();
 
-    public static void start(String url){
+    public static synchronized void start(String url){
         runCurrencyData(url);
     }
 
-    public static priceData getPriceDataByPair(String pair){
+    public static synchronized Double getDemoPurchasePriceByPair(String pair){
+        return getPriceDataByPair(pair).getDemo_purchase_price();
+    }
+
+    public static synchronized Double getCurrentPriceByPair(String pair){
+        return getPriceDataByPair(pair).getPrice();
+    }
+
+    public static synchronized Double getMovingAverageByPair(String pair){
+        List pd = getPriceDataByPair(pair).getPrice_list();
+
+        Double value = 0.0;
+        Integer size = pd.size();
+
+        for(int i=0;i<size;i++){
+            value += Double.parseDouble(pd.get(i).toString());
+        }
+
+        if(size < 1){
+            return null;
+        }
+
+        return value/size;
+    }
+
+    public static synchronized priceData getPriceDataByPair(String pair){
         System.out.println("PAIR: "+pair);
         System.out.print(PAIR_MAP.toString());
         if(PAIR_MAP.containsKey(pair)){
@@ -88,6 +113,18 @@ URL = url;
         }
 
         System.out.println("*LESS CALLS TO API!!!*");
+
+        System.out.println("*PAIR MAP 1*");
+        if(PAIR_MAP.containsKey("USD-BTC")) {
+            System.out.println("*USD-BTC*");
+            System.out.print(PAIR_MAP.get("USD-BTC").getPrice_list());
+        }
+
+        if(PAIR_MAP.containsKey("BTC-USD")) {
+            System.out.println("*BTC-USD*");
+            System.out.print(PAIR_MAP.get("BTC-USD").getPrice_list());
+        }
+        System.out.println("*PAIR MAP 2*");
 
       /*  for (int i = 0; i < quote_currencies.size(); i++)
         {
