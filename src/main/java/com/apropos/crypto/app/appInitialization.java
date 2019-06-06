@@ -30,6 +30,7 @@ public class appInitialization {
         coinbasePairRelatedData.setURL(URL);
         coinbaseProOrderBook.setURL(PROURL);
         coinbaseProTradeBook.setURL(PROURL);
+        coinbaseProBackgroundOrderbook.setURL(PROURL);
             counter++;
 
     }

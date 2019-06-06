@@ -101,48 +101,8 @@ URL = url;
                     // do something with jsonObject here
                 }
             }
-
-   /*         System.out.println("#BASE: "+uppercase_base);
-
-            if(rates1 != null) {
-
-                System.out.print(rates1.toString());
-            }else{
-                System.out.print(uppercase_base+" is null");
-            }*/
         }
 
-        System.out.println("*LESS CALLS TO API!!!*");
-
-        System.out.println("*PAIR MAP 1*");
-        if(PAIR_MAP.containsKey("USD-BTC")) {
-            System.out.println("*USD-BTC*");
-            System.out.print(PAIR_MAP.get("USD-BTC").getPrice_list());
-        }
-
-        if(PAIR_MAP.containsKey("BTC-USD")) {
-            System.out.println("*BTC-USD*");
-            System.out.print(PAIR_MAP.get("BTC-USD").getPrice_list());
-        }
-        System.out.println("*PAIR MAP 2*");
-
-      /*  for (int i = 0; i < quote_currencies.size(); i++)
-        {
-            String q_currency = quote_currencies.get(i).toString().toUpperCase();
-            if (!base_currencies.contains(q_currency)) {
-                for (int q = 0; q < base_currencies.size(); q++) {
-                    String uppercase_base = base_currencies.get(q).toString().toUpperCase();
-                    JSONObject rates = getCurrencyRateData(uppercase_base);
-                    ordinal_index_key++;
-
-                    if (rates.has(q_currency)) {
-                        String rate = rates.get(q_currency).toString();
-                        setMap(q_currency,uppercase_base, Double.parseDouble(rate),Double.parseDouble(rate));
-                    }
-
-                }
-            }
-        }*/
     }
 
     private static void setMap(pairManager pair_manager, Double value){
