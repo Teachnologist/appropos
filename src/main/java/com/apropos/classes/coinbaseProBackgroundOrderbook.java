@@ -28,6 +28,17 @@ public class coinbaseProBackgroundOrderbook {
         URL = url;
     }
 
+    public static Float getMidPoint(String pair){
+        orderData ask = getBestAsk(pair);
+        orderData bid = getBestBid(pair);
+
+        if(ask != null && bid != null){
+            Float demand_volume_ratio = bid.getCumumlative_size()/(bid.getCumumlative_size()+ask.getCumumlative_size());
+            return (ask.getPrice()*(1-demand_volume_ratio)) + (bid.getPrice()*demand_volume_ratio);
+        }
+        return null;
+    }
+
     public static Float getSpread(String pair){
         orderData ask = getBestAsk(pair);
         orderData bid = getBestBid(pair);
