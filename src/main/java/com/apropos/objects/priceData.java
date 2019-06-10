@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class priceData {
-    List price_list = new ArrayList();
-    Double price = 0.00;
-    Double demo_purchase_price = 0.00;
+    private List price_list = new ArrayList();
+    private Double price = 0.00;
+    private Double demo_purchase_price = 0.00;
 
     public priceData(List price_list,Double price){
         this.price = price;
@@ -20,15 +20,15 @@ public class priceData {
         this.demo_purchase_price = demo_purchase_price;
     }
 
-    public void setDemo_purchase_price(Double demo_purchase_price) {
+    private void setDemo_purchase_price(Double demo_purchase_price) {
         this.demo_purchase_price = demo_purchase_price;
     }
 
-    public void setPrice(Double price) {
+    private void setPrice(Double price) {
         this.price = price;
     }
 
-    public void setPrice_list(List price_list) {
+    private void setPrice_list(List price_list) {
         this.price_list = price_list;
     }
 
